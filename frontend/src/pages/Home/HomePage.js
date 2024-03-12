@@ -1,9 +1,14 @@
-import React, { useEffect, useReducer } from 'react'
+import React, { useEffect, useReducer } from 'react';
 import { useParams } from 'react-router-dom';
-import { getAll, getAllTags, search, getAllbyTag } from '../../services/foodService';
-import Thumbnails from '../../components/Thumbnails/Thumbnails';
 import Search from '../../components/Search/Search';
 import Tags from '../../components/Tags/Tags';
+import Thumbnails from '../../components/Thumbnails/Thumbnails';
+import {
+  getAll,
+  getAllByTag,
+  getAllTags,
+  search,
+} from '../../services/foodService';
 import NotFound from '../../components/NotFound/NotFound';
 
 const initialState = {foods:[], tags:[]};
@@ -28,7 +33,7 @@ export default function HomePage() {
     getAllTags().then(tags => dispatch({type:'TAGS_LOADED', payload:tags}));
 
     const loadFoods = tag 
-      ? getAllbyTag(tag) 
+      ? getAllByTag(tag) 
       :searchTerm 
       ? search (searchTerm) 
       : getAll();
