@@ -4,6 +4,7 @@ import auth from '../middleware/auth.mid.js';
 import { BAD_REQUEST } from '../constants/httpStatus.js';
 import { OrderModel } from '../models/order.model.js';
 import { OrderStatus } from '../constants/orderStatus.js';
+import { UserModel } from '../models/user.model.js';
 
 const router = Router();
 router.use(auth);
@@ -45,6 +46,28 @@ router.put(
 );
 
 router.get(
+  '/track/:orderId',
+  handler(async (req, res) => {
+    const { orderId } = req.params;
+    const user = await UserModel.findById(req.user.id);
+
+    const filter = {
+      _id: orderId,
+    };
+
+    if (!user.isAdmin) {
+      filter.user = user._id;
+    }
+
+    const order = await OrderModel.findOne(filter);
+
+    if (!order) return res.send(UNAUTHORIZED);
+
+    return res.send(order);
+  })
+);
+
+router.get(
   '/newOrderForCurrentUser',
   handler(async (req, res) => {
     const order = await getNewOrderForCurrentUser(req);
@@ -57,6 +80,6 @@ const getNewOrderForCurrentUser = async req =>
   await OrderModel.findOne({
     user: req.user.id,
     status: OrderStatus.NEW,
-  });
+  }).populate('user');
 
 export default router;
