@@ -49,7 +49,7 @@ export default function ProfilePage() {
           <Button type="submit" text="Update" backgroundColor="#009e84" />
         </form>
 
-        <ChangePassword/>
+        <ChangePassword />
       </div>
     </div>
   );
